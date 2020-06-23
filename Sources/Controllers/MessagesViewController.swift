@@ -106,6 +106,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
         setupDelegates()
         addMenuControllerObservers()
         addObservers()
+        addKeyboardNotificationObservers()
     }
     
     open override func viewDidAppear(_ animated: Bool) {
@@ -147,8 +148,40 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
         removeMenuControllerObservers()
         removeObservers()
         clearMemoryCache()
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - Keyboard Notifications
+    private func addKeyboardNotificationObservers() {
+        NotificationCenter.default.addObserver(self, selector:
+            #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification,
+                                             object: nil)
+        NotificationCenter.default.addObserver(self, selector:
+            #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification,
+                                             object: nil)
+    }
+    
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let keyboardInfo = (notification as NSNotification).userInfo else {
+            return
+        }
+        let animationDuration = (keyboardInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        UIView.animate(withDuration: animationDuration) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        guard let keyboardInfo = (notification as NSNotification).userInfo else {
+            return
+        }
+        let animationDuration = (keyboardInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        UIView.animate(withDuration: animationDuration) {
+            self.view.layoutIfNeeded()
+        }
     }
 
+    
     // MARK: - Methods [Private]
 
     private func setupDefaults() {
@@ -166,23 +199,41 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     }
 
     private func setupSubviews() {
+        setupMessagesCollectionView()
+        setupMessageInputBar()
+    }
+    
+    private func setupMessagesCollectionView() {
         view.addSubview(messagesCollectionView)
+    }
+    
+    private func setupMessageInputBar() {
+        view.addSubview(messageInputBar)
     }
 
     private func setupConstraints() {
+        addConstraintsToMessageInputBar()
+        addConstraintsToMessageCollectionView()
+    }
+    
+    private func addConstraintsToMessageCollectionView() {
         messagesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            messagesCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            messagesCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            messagesCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            messagesCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    private func addConstraintsToMessageInputBar() {
+        messageInputBar.translatesAutoresizingMaskIntoConstraints = false
         
-        let top = messagesCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: topLayoutGuide.length)
-        let bottom = messagesCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        if #available(iOS 11.0, *) {
-            let leading = messagesCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor)
-            let trailing = messagesCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
-            NSLayoutConstraint.activate([top, bottom, trailing, leading])
-        } else {
-            let leading = messagesCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-            let trailing = messagesCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            NSLayoutConstraint.activate([top, bottom, trailing, leading])
-        }
+        NSLayoutConstraint.activate([
+            messageInputBar.leftAnchor.constraint(equalTo: view.leftAnchor),
+            messageInputBar.rightAnchor.constraint(equalTo: view.rightAnchor),
+            messageInputBar.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
     // MARK: - Typing Indicator API
