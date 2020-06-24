@@ -49,7 +49,12 @@ public class CustomMessageInputBar: InputBarAccessoryView {
             sendButton
                 .configure {
                     $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 6, right: 0)
-                    $0.image = #imageLiteral(resourceName: "ic_send").withRenderingMode(.alwaysTemplate)
+                    if #available(iOS 13.0, *) {
+                        $0.image = UIImage(systemName: "paperplane.fill")
+                        $0.title = nil
+                    } else {
+                        $0.title = "Send"
+                    }
                     $0.tintColor = .black
                     $0.setSize(CGSize(width: 30, height: 30), animated: false)
                 },
@@ -60,7 +65,7 @@ public class CustomMessageInputBar: InputBarAccessoryView {
     
     private func setupLeftItems() {
         let leftItems = [
-            makeButton(image: #imageLiteral(resourceName: "ic_up"), withTintColor: .black)
+            makeButton(named:"plus", withTintColor: .black)
                 .onTextViewDidChange({ (button, textView) in
                     button.isEnabled = textView.text.isEmpty
                 }).onSelected{
@@ -72,11 +77,16 @@ public class CustomMessageInputBar: InputBarAccessoryView {
         setStackViewItems(leftItems, forStack: .left, animated: false)
     }
     
-    private func makeButton(image: UIImage, withTintColor color: UIColor) -> InputBarButtonItem {
+    private func makeButton(named: String, withTintColor color: UIColor) -> InputBarButtonItem {
         return InputBarButtonItem()
             .configure {
                 $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
-                $0.image = image.withRenderingMode(.alwaysTemplate)
+                if #available(iOS 13.0, *) {
+                    $0.image = UIImage(systemName: named)
+                    $0.title = nil
+                } else {
+                    $0.title = "Add"
+                }
                 $0.tintColor = color
                 $0.setSize(CGSize(width: 30, height: 30), animated: false)
             }.onSelected {
