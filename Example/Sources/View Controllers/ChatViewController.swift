@@ -110,6 +110,7 @@ class ChatViewController: MessagesViewController, MessagesDataSource {
     
     func configureMessageInputBar() {
         messageInputBar.delegate = self
+        messageInputBar.inputBarDelegate = self
         messageInputBar.inputTextView.tintColor = .primaryColor
         messageInputBar.sendButton.setTitleColor(.primaryColor, for: .normal)
         messageInputBar.sendButton.setTitleColor(
@@ -294,6 +295,14 @@ extension ChatViewController: MessageLabelDelegate {
         print("Custom data detector patter selected: \(pattern)")
     }
 
+}
+
+extension ChatViewController: CustomMessageInputBarDelegate {
+    
+    func didTapAddButton(_ view: InputBarAccessoryView) {
+        // TODO: - Need to handle add document functionality
+        print("Add Button Tapped")
+    }
 }
 
 // MARK: - MessageInputBarDelegate

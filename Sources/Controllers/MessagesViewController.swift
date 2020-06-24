@@ -34,7 +34,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     open var messagesCollectionView = MessagesCollectionView()
 
     /// The `InputBarAccessoryView` used as the `inputAccessoryView` in the view controller.
-    open lazy var messageInputBar = InputBarAccessoryView()
+    open lazy var messageInputBar = CustomMessageInputBar()
 
     /// A Boolean value that determines whether the `MessagesCollectionView` scrolls to the
     /// last item whenever the `InputTextView` begins editing.
