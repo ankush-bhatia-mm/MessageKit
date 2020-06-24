@@ -106,7 +106,6 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
         setupDelegates()
         addMenuControllerObservers()
         addObservers()
-        addKeyboardNotificationObservers()
     }
     
     open override func viewDidAppear(_ animated: Bool) {
@@ -148,39 +147,7 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
         removeMenuControllerObservers()
         removeObservers()
         clearMemoryCache()
-        NotificationCenter.default.removeObserver(self)
     }
-    
-    // MARK: - Keyboard Notifications
-    private func addKeyboardNotificationObservers() {
-        NotificationCenter.default.addObserver(self, selector:
-            #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification,
-                                             object: nil)
-        NotificationCenter.default.addObserver(self, selector:
-            #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification,
-                                             object: nil)
-    }
-    
-    @objc private func keyboardWillShow(_ notification: Notification) {
-        guard let keyboardInfo = (notification as NSNotification).userInfo else {
-            return
-        }
-        let animationDuration = (keyboardInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        UIView.animate(withDuration: animationDuration) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc private func keyboardWillHide(_ notification: Notification) {
-        guard let keyboardInfo = (notification as NSNotification).userInfo else {
-            return
-        }
-        let animationDuration = (keyboardInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        UIView.animate(withDuration: animationDuration) {
-            self.view.layoutIfNeeded()
-        }
-    }
-
     
     // MARK: - Methods [Private]
 
