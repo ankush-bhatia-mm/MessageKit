@@ -11,6 +11,8 @@ import InputBarAccessoryView
 public protocol CustomMessageInputBarDelegate: AnyObject {
     
     func didTapAddButton(_ view: InputBarAccessoryView)
+    func didHoldDownMicButton(_ view: InputBarAccessoryView)
+    func didReleaseMicButton(_ view: InputBarAccessoryView)
 }
 
 public class CustomMessageInputBar: InputBarAccessoryView {
@@ -36,7 +38,7 @@ public class CustomMessageInputBar: InputBarAccessoryView {
         inputTextView.layer.cornerRadius = 16.0
         inputTextView.layer.masksToBounds = true
         inputTextView.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-        setRightStackViewWidthConstant(to: 38, animated: false)
+        setRightStackViewWidthConstant(to: 38*2, animated: false)
         middleContentViewPadding.right = -38
         separatorLine.isHidden = true
         isTranslucent = true
@@ -45,6 +47,7 @@ public class CustomMessageInputBar: InputBarAccessoryView {
     }
     
     private func setupRightItems() {
+        let micButton = setupMicButton()
         let rightItems = [
             sendButton
                 .configure {
@@ -58,9 +61,21 @@ public class CustomMessageInputBar: InputBarAccessoryView {
                     $0.tintColor = .black
                     $0.setSize(CGSize(width: 30, height: 30), animated: false)
                 },
+            micButton,
             InputBarButtonItem.fixedSpace(2)
         ]
         setStackViewItems(rightItems, forStack: .right, animated: false)
+    }
+    
+    private func setupMicButton() -> InputBarButtonItem {
+        let micButton = makeButton(named: "mic.fill", withTintColor: .black)
+        micButton.addTarget(self,
+                            action: #selector(didHoldDownMicButton(_:)),
+                            for: .touchDown)
+        micButton.addTarget(self,
+                            action: #selector(didReleaseMicButton(_:)),
+                            for: .touchUpInside)
+        return micButton
     }
     
     private func setupLeftItems() {
@@ -96,7 +111,15 @@ public class CustomMessageInputBar: InputBarAccessoryView {
             }
     }
     
-    func didTapAddButton(_ sender: InputBarButtonItem) {
+    @objc private func didTapAddButton(_ sender: InputBarButtonItem) {
         inputBarDelegate?.didTapAddButton(self)
+    }
+    
+    @objc private func didHoldDownMicButton(_ sender: InputBarButtonItem) {
+        inputBarDelegate?.didHoldDownMicButton(self)
+    }
+    
+    @objc private func didReleaseMicButton(_ sender: InputBarButtonItem) {
+        inputBarDelegate?.didReleaseMicButton(self)
     }
 }

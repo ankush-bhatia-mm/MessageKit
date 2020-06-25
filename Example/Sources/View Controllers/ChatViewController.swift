@@ -303,6 +303,15 @@ extension ChatViewController: CustomMessageInputBarDelegate {
         // TODO: - Need to handle add document functionality
         print("Add Button Tapped")
     }
+    
+    
+    func didHoldDownMicButton(_ view: InputBarAccessoryView) {
+        print("Holding Mic Button")
+    }
+    
+    func didReleaseMicButton(_ view: InputBarAccessoryView) {
+        print("Released Mic Button")
+    }
 }
 
 // MARK: - MessageInputBarDelegate
