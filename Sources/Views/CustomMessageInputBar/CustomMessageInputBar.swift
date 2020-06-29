@@ -81,11 +81,13 @@ public class CustomMessageInputBar: InputBarAccessoryView {
     }
     
     private func setupLeftItems() {
+        let addButton = makeButton(named:"plus", withTintColor: .black)
+            .onTextViewDidChange({ (button, textView) in
+                button.isEnabled = textView.text.isEmpty
+            })
+        addButton.addTarget(self, action: #selector(didTapAddButton(_:)), for: .touchUpInside)
         let leftItems = [
-            makeButton(named:"plus", withTintColor: .black)
-                .onTextViewDidChange({ (button, textView) in
-                    button.isEnabled = textView.text.isEmpty
-                }),
+            addButton,
             InputBarButtonItem.fixedSpace(2)
         ]
         setLeftStackViewWidthConstant(to: 28, animated: false)
