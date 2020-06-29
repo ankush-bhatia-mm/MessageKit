@@ -297,20 +297,20 @@ extension ChatViewController: MessageLabelDelegate {
 
 }
 
+// MARK: - CustomMessageInputBarDelegate
 extension ChatViewController: CustomMessageInputBarDelegate {
     
-    func didTapAddButton(_ view: InputBarAccessoryView) {
+    func didTapAddButton(_ view: CustomMessageInputBar, sender: InputBarButtonItem) {
         // TODO: - Need to handle add document functionality
         print("Add Button Tapped")
     }
     
-    
-    func didHoldDownMicButton(_ view: InputBarAccessoryView) {
-        print("Holding Mic Button")
+    func didHoldDownMicButton(_ view: CustomMessageInputBar, sender: InputBarButtonItem) {
+        // TODO: - Need to start recording the audio.
     }
     
-    func didReleaseMicButton(_ view: InputBarAccessoryView) {
-        print("Released Mic Button")
+    func didReleaseMicButton(_ view: CustomMessageInputBar, sender: InputBarButtonItem) {
+       // TODO: - Need to dismiss the recording.
     }
 }
 
